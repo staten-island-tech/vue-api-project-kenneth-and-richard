@@ -5,13 +5,13 @@
 </template>
 
 <script setup>
-const data = {
-    type: 'bar',
-    data:   {
-        datasets: [{
-            data: [{x: 10, y: 'A'}, {x: 15, y: 'B'}, {x: 5, y: 'C'}]
-}]
-    }
+import { ref, onMounted } from "vue";
+const pokemon = ref("");
+async function getPokemon(){
+    let res = await fetch();
+    let data = await res.json();
+    pokemon.value = data.results;
+    
 }
 </script>
 
