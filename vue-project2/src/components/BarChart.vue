@@ -1,5 +1,6 @@
 <template>
     <Bar v-if="loaded"
+    :options="chartOptions"
     :data="chartData"/>
 </template>
 
@@ -12,13 +13,7 @@ import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, Li
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
 const loaded = ref(false);
-const chartData = ref();
-
-async function getData () {
-    const { userlist } = await fetch('https://data.cityofnewyork.us/resource/uip8-fykc.json');
-    chartData.value = userlist;
-    loaded.value = true;
-}
+const chartData = ref({});
 
 onMounted(() => {
     loaded.value = false;
@@ -29,7 +24,45 @@ onMounted(() => {
     }
 });
 
-/*const chartOptions = {
+async function getData () {
+    try {
+        const response = await fetch('https://data.cityofnewyork.us/resource/uip8-fykc.json');
+        chartData.value.labels = [];
+        chartData.value.datasets = [];
+        const data = await response.json();
+        const allRaces = {};
+        for (let criminal of data) {
+            // for each race make a variable
+            // if race == race then increment variable
+            // push those varaibles to datasets
+            if (!chartData.value.labels.includes(criminal.perp_race)) {
+                const race = criminal.perp_race;
+                chartData.value.labels.push(criminal.perp_race);
+                if (!allRaces.race) {/*here*/
+                    allRaces.race = 0;
+                }
+                allRaces.race++;
+            }
+        }
+        console.log(allRaces)
+
+        for (let race of chartData.value.labels) {
+            let increment = 0;
+            for (let criminal of data) {
+
+            }
+        }
+
+        console.log(chartData.value)
+
+
+
+        loaded.value = true;
+    } catch (error) {
+        console.warn(error);
+    }
+}
+const chartOptions = {
     responsive: true,
     animation: false,
     plugins: {
@@ -40,17 +73,23 @@ onMounted(() => {
             enabled: false
         }
     }
-}*/
+}
 
 /*const chartData = {
     labels: ["January", "February", "March"],
     datasets: [{
         label: "# of days",
-        data: [40, 20, 12],
+        data: {
+            name: "afjkauisf",
+            perp_race: "afaif",
+        },
         
     }, {
         label: "# of aiogfhioasf",
-        data: [50, 10, 35],
+        data: {
+            name: "aduigfiifa",
+            perp_race: "aduifhaif",
+        },
     }],
 }*/
 
