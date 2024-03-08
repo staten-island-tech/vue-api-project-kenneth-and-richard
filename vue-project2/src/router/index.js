@@ -8,7 +8,18 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView
-    } /*,
+    },
+    {
+      path: '/doughnut',
+      name: 'doughnut',
+      component: () => import('../views/Doughnut.vue')
+    }
+  ]
+})
+export default router
+    
+    
+    /*,
     {
       path: '/about',
       name: 'about',
@@ -17,7 +28,3 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue')
     }*/
-  ]
-})
-
-export default router

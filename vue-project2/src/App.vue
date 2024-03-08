@@ -6,13 +6,16 @@ import { RouterLink, RouterView } from 'vue-router'
   <header>
     <div class="wrapper">
       <nav>
-        <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/doughnut">Doughnut Chart</RouterLink>
       </nav>
     </div>
   </header>
 
   <RouterView />
 </template>
+
+
+
 
 <style scoped>
 header {
