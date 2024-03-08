@@ -26,42 +26,36 @@ onMounted(() => {
 
 async function getData () {
     try {
-        const response = await fetch('https://data.cityofnewyork.us/resource/uip8-fykc.json');
-        chartData.value.labels = [];
-        chartData.value.datasets = [];
+        const response = await fetch(`https://data.cityofnewyork.us/resource/uip8-fykc.json?$limit=10000`);
         const data = await response.json();
-        const allRaces = {};
+
+        chartData.value.labels = [];
+        chartData.value.datasets = [{
+            data: []
+        }];
+
         for (let criminal of data) {
-            // for each race make a variable
-            // if race == race then increment variable
-            // push those varaibles to datasets
             if (!chartData.value.labels.includes(criminal.perp_race)) {
-                const race = criminal.perp_race;
                 chartData.value.labels.push(criminal.perp_race);
-                if (!allRaces.race) {/*here*/
-                    allRaces.race = 0;
-                }
-                allRaces.race++;
             }
         }
-        console.log(allRaces)
 
         for (let race of chartData.value.labels) {
-            let increment = 0;
+            let peopleInRace = 0;
             for (let criminal of data) {
-
+                if (criminal.perp_race == race) {
+                    peopleInRace++;
+                }
             }
+            chartData.value.datasets[0].data.push(peopleInRace);
         }
-
-        console.log(chartData.value)
-
-
 
         loaded.value = true;
     } catch (error) {
         console.warn(error);
     }
 }
+
 const chartOptions = {
     responsive: true,
     animation: false,
@@ -70,28 +64,10 @@ const chartOptions = {
             display: false
         },
         tooltip: {
-            enabled: false
+            enabled: true
         }
     }
 }
-
-/*const chartData = {
-    labels: ["January", "February", "March"],
-    datasets: [{
-        label: "# of days",
-        data: {
-            name: "afjkauisf",
-            perp_race: "afaif",
-        },
-        
-    }, {
-        label: "# of aiogfhioasf",
-        data: {
-            name: "aduigfiifa",
-            perp_race: "aduifhaif",
-        },
-    }],
-}*/
 
 </script>
 
