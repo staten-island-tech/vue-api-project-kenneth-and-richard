@@ -6,7 +6,7 @@
 
 <script setup>
 
-import { ref, onMounted, defineEmits } from 'vue';
+import { ref, onMounted } from 'vue';
 import { Line } from 'vue-chartjs';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js';
 
@@ -51,7 +51,7 @@ async function getData () {
             const correctChoiceData = await fetch(`https://api.fxratesapi.com/historical?api_key=fxr_demo_asdiksd21&date=${year}-${month}-${day}&currencies=${props.CorrectChoice.code}`)
             const data = await correctChoiceData.json();
 
-            // console.log(data, Object.entries(data.rates));
+            console.log(data, Object.entries(data.rates));
 
             historicalDates.push(`${day}/${month}/${year}`);
             historicalRates.push(Object.entries(data.rates)[0][1]);
