@@ -1,7 +1,8 @@
 <template>
     <Line v-if="loaded"
     :options="chartOptions"
-    :data="chartData"/>
+    :data="chartData"
+    id="oasfhioasif"/>
 </template>
 
 <script setup>
@@ -53,7 +54,7 @@ async function getData () {
 
             console.log(data, Object.entries(data.rates));
 
-            historicalDates.push(`${day}/${month}/${year}`);
+            historicalDates.push(`${month}/${day}/${year}`);
             historicalRates.push(Object.entries(data.rates)[0][1]);
         }
 
@@ -78,7 +79,7 @@ async function getData () {
 }
 
 const chartOptions = {
-    responsive: true,
+    responsive: false,
     animation: true,
     plugins: {
         legend: {
@@ -109,5 +110,9 @@ const chartOptions = {
 </script>
 
 <style scoped>
+
+#oasfhioasif {
+    width: 50em;
+}
 
 </style>

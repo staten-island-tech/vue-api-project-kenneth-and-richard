@@ -1,30 +1,21 @@
 <template>
   <div>
+    <h1>Guess the currency!</h1>
+    <h3>asjkfgasifiaf</h3>
 
+    <RouterLink to="/play">Play</RouterLink>
   </div>
 </template>
 
 <script setup>
 
-/*import { getData } from '@/stores/data';
-
-console.log(getData)*/
-
-import { ref, onBeforeMount } from 'vue';
-
-const pokemon = ref("");
-async function getPokemon () {
-  let res = await fetch("link");
-  let data = await res.json();
-  pokemon.value = data.results;
-}
-
-onBeforeMount(() => {
-  getPokemon();
-});
+import { ref } from 'vue';
+import { RouterLink } from 'vue-router';
 
 </script>
 
 <style scoped>
+
+
 
 </style>

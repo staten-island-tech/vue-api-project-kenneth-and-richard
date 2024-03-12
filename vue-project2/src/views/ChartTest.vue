@@ -1,6 +1,11 @@
 <template>
     <h1 v-if="error">Error</h1>
-    <LineChart :Choices="choices" :CorrectChoice="correctChoice" v-if="loaded" @response="error = true"/>
+    
+    <LineChart :Choices="choices"
+    :CorrectChoice="correctChoice"
+    v-if="loaded"
+    @response="error = true"/>
+
 </template>
 
 <script setup>
@@ -18,7 +23,7 @@ onMounted(() => {
     try {
         getData();
     } catch (error) {
-        console.log(error)
+        console.warn(error);
     }
 });
 
@@ -52,5 +57,7 @@ async function getData () {
 </script>
 
 <style scoped>
+
+
 
 </style>
