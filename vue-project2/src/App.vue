@@ -1,16 +1,13 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router';
-import ChartTest from './views/ChartTest.vue';
 </script>
 
 <template>
   <header>
     <div class="wrapper">
       <nav>
-        <RouterLink to="/">Home</RouterLink>
       </nav>
     </div>
-    <ChartTest />
   </header>
 
   <RouterView />
