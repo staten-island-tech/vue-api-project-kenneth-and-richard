@@ -2,7 +2,7 @@
     <Line v-if="loaded"
     :options="chartOptions"
     :data="chartData"
-    id="oasfhioasif"/>
+    id="chart"/>
 </template>
 
 <script setup>
@@ -32,13 +32,13 @@ onMounted(() => {
 });
 
 async function getData () {
+    const historicalRates = [];
+    const historicalDates = [];
+
     try {
-        // console.log(props.Choices)
-        // console.log(props.CorrectChoice)
-        
-        const historicalRates = [];
-        const historicalDates = [];
-        
+        console.log(props.Choices)
+        console.log(props.CorrectChoice)
+
         const date = new Date();
         let day = date.getDate();
         let month = date.getMonth() + 1;
@@ -46,36 +46,36 @@ async function getData () {
             month = "0" + month;
         }
 
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 6; i++) {
             let year = date.getFullYear() - i;
 
-            const correctChoiceData = await fetch(`https://api.fxratesapi.com/historical?api_key=fxr_demo_asdiksd21&date=${year}-${month}-${day}&currencies=${props.CorrectChoice.code}`)
+            const correctChoiceData = await fetch(`https://api.fxratesapi.com/historical?api_key=fxr_demo_asdiksd21&date=${year}-${month}-${day}&currencies=${props.CorrectChoice.code}`);
             const data = await correctChoiceData.json();
 
             console.log(data, Object.entries(data.rates));
 
-            historicalDates.push(`${month}/${day}/${year}`);
+            historicalDates.push(year);
             historicalRates.push(Object.entries(data.rates)[0][1]);
         }
 
         // console.log(historicalDates, historicalRates)
-
-        chartData.value.labels = historicalDates.slice().reverse();
-        chartData.value.datasets = [{
-            data: historicalRates.slice().reverse(),
-            backgroundColor: "#ffff00", // point and fill color
-            borderColor: "#000000", // line color
-            fill: true,
-            pointStyle: 'circle',
-            pointRadius: 10,
-            pointHoverRadius: 15
-        }];
-
-        loaded.value = true;
     } catch (error) {
         console.warn(error);
         emit("response", "error");
     }
+
+    chartData.value.labels = historicalDates.slice().reverse();
+    chartData.value.datasets = [{
+        data: historicalRates.slice().reverse(),
+        backgroundColor: "#90ff54", // point and fill color
+        borderColor: "#182b0d", // line color
+        fill: true,
+        pointStyle: 'circle',
+        pointRadius: 5,
+        pointHoverRadius: 10
+    }];
+
+    loaded.value = true;
 }
 
 const chartOptions = {
@@ -89,19 +89,31 @@ const chartOptions = {
             enabled: true
         }
     },
+    interaction: {
+        mode: "index",
+        intersect: false
+    },
     scales: {
         x: {
             display: true,
             title: {
                 display: true,
-                text: "4 Year History"
+                text: "6 Year History",
+                color: "#ffffff"
+            },
+            ticks: {
+                color: "#ffffff"
             }
         },
         y: {
             display: true,
             title: {
                 display: true,
-                text: "Exchange Rate (USD -> Currency)"
+                text: "Exchange Rate (USD -> Currency)",
+                color: "#ffffff"
+            },
+            ticks: {
+                color: "#ffffff"
             }
         }
     }
@@ -111,7 +123,7 @@ const chartOptions = {
 
 <style scoped>
 
-#oasfhioasif {
+#chart {
     width: 50em;
 }
 
