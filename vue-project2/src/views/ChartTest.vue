@@ -23,6 +23,24 @@
     </div>
     </Transition>
 
+    <Transition name="howToPlay">
+      <div class="howToPlayBackground" v-if="outcomeCorrect">
+        <div class="howToPlayMenu">
+            <h1>correct ggs</h1>
+            <button @click="outcomeCorrect = false">Next</button>
+        </div>
+    </div>
+    </Transition>
+
+    <Transition name="howToPlay">
+      <div class="howToPlayBackground" v-if="outcomeWrong">
+        <div class="howToPlayMenu">
+            <h1>wrong smh</h1>
+            <RouterLink to="/" @click="wrong" class="returnButton">Done</RouterLink>
+        </div>
+    </div>
+    </Transition>
+
     <h1 v-if="error">Error</h1>
 
     <div class="charts">
@@ -34,8 +52,15 @@
     
 
     <div class="buttonArray">
-        <button v-for="choice in choices">{{ choice.code }} {{ choice.name }}</button>
+        <button v-for="choice in choices"
+        @click="answer(choice)"
+        :class="{ active: answerChoice == choice }"
+        class="choiceButton">
+          {{ choice.code }} {{ choice.name }}
+        </button>
     </div>
+
+    <button @click="submit">Submit</button>
 
 </template>
 
@@ -49,6 +74,34 @@ const choices = ref();
 const correctChoice = ref();
 const error = ref(false);
 const transitionActive = ref(false);
+const answerChoice = ref();
+const outcomeCorrect = ref(false);
+const outcomeWrong = ref(false);
+
+function wrong () {
+  outcomeWrong.value = false;
+}
+
+function answer (choice) {
+  answerChoice.value = choice;
+}
+
+function submit () {
+  if (answerChoice.value == correctChoice.value) {
+    outcomeCorrect.value = true;
+    loaded.value = false;
+    try {
+      getData();
+    } catch (error) {
+      console.warn(error);
+      error.value = true;
+    }
+    return;
+  }
+
+  outcomeWrong.value = true;
+  loaded.value = false;
+}
 
 onMounted(() => {
     transitionActive.value = true;
@@ -110,15 +163,27 @@ async function getData () {
 
 <style scoped>
 
+.returnButton {
+  color: white;
+}
+
+.choiceButton {
+  background-color: var(--normalText);
+}
+
+.active {
+  background-color: var(--deepGreen);
+}
+
 #tutorialButtonImg {
-  width: 3.1em;
-  height: 3.1em;
+  width: 2.5em;
+  height: 2.5em;
   transition: all 0.75s;
 }
 
 #tutorialButton {
   margin-top: auto;
-  margin-bottom: 2vh;
+  margin-bottom: 3vh;
   height: 2em;
   width: 2em;
   font-size: var(--h2);
@@ -132,11 +197,13 @@ async function getData () {
 }
 #tutorialButton:hover {
   transform: scale(1.1);
-  width: 20em;
+  width: 16em;
 }
 #tutorialButton:hover #tutorialButtonImg {
+  width: 3.1em;
+  height: 3.1em;
   transform: rotate(720deg);
-  translate: 9em;
+  translate: 7em;
 }
 
 #tutorialButtonText {
