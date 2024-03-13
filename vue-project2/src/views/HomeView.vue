@@ -5,10 +5,14 @@
   </div>
 
   <div class="buttonArray">
-    <RouterLink to="/play" class="playButton">
+    <RouterLink to="/play" class="playButton" id="play">
       Play
       <img src="/play.svg" id="playButtonImg">
     </RouterLink>
+    <button class="playButton" id="settings" @click="showSettings = true">
+      Settings
+      <img src="/settings.svg" id="playButtonImg">
+    </button>
   </div>
 
 </template>
@@ -17,6 +21,8 @@
 
 import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
+
+const showSettings = ref(false);
 
 </script>
 
@@ -53,14 +59,20 @@ import { RouterLink } from 'vue-router';
   border-radius: 5em;
 }
 
+#play {
+  background: linear-gradient(to bottom, rgb(161, 240, 187), var(--deepGreen));
+}
+#settings {
+  background: linear-gradient(to bottom, rgb(161, 222, 240), var(--cyan));
+}
+
 .playButton {
-  background: linear-gradient(to bottom, rgb(240, 227, 161), var(--deepYellow));
   text-decoration: none;
-  width: 4em;
+  font-size: var(--h2);
+  width: 6em;
   height: 1.5em;
   padding-top: 0.25em;
   padding-bottom: 0.25em;
-  font-size: var(--h2);
   overflow: hidden;
   filter: grayscale(0.5);
   transition: all 0.5s;
@@ -70,10 +82,28 @@ import { RouterLink } from 'vue-router';
   align-items: center;
 }
 .playButton:hover {
-    transform: scale(1.1);
     filter: grayscale(0);
-    width: 6em;
     height: 3.25em;
+}
+
+#settings {
+  text-decoration: none;
+  font-size: var(--h2);
+  width: 6em;
+  height: 2em;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+  overflow: hidden;
+  filter: grayscale(0.5);
+  transition: all 0.5s;
+  border-radius: 0.5em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#settings:hover {
+  filter: grayscale(0);
+  height: 3.75em;
 }
 
 #playButtonImg {
