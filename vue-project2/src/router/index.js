@@ -10,7 +10,7 @@ const router = createRouter({
       component: () => import('../views/ChartTest.vue')
     },
     {
-      path: '/',
+      path: '/doughnut',
       name: 'doughnut',
       component: () => import('../views/thatscrazy.vue')
     }
@@ -27,3 +27,5 @@ const router = createRouter({
     }*/
     ]
   });
+
+  export default router

@@ -14,6 +14,10 @@ const loaded = ref(false);
 const currencyData = ref({});
 const emit = defineEmits(["response"]);
 
+const props = defineProps({
+    Choices: Array,
+})
+
 onMounted(() => {
     loaded.value = false;
     try {
@@ -25,13 +29,16 @@ onMounted(() => {
 
 async function getData () {
     try {
-        const historicalRates = [];
-        const historicalCurrencies = [];
-        const correctChoiceData = await fetch(`https://api.fxratesapi.com/currencies?api_key=fxr_demo_asdiksd21&&currencies=${props.CorrectChoice.code}`)
+        const currentRates = [];
+        const currencies = [];
+        
+        const correctChoiceData = await fetch(`https://api.fxratesapi.com/latest?base=USD=${props.Choices}`)
         const data = await correctChoiceData.json();
-
-        currencyData.value.labels = historicalCurrencies;
-        currencyData.value.datasets = [{
+       
+        currentRates.push(Object.entries(data.rates)[0][1]);
+        Choices.value.labels = currencies;
+        chartData.value.datasets = [{
+            data: currentRates,
         }];
 
         loaded.value = true;
