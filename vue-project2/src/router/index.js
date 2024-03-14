@@ -11,11 +11,6 @@ const router = createRouter({
       path: '/play',
       name: 'play',
       component: () => import('../views/ChartTest.vue')
-    },
-    {
-      path: '/doughnut',
-      name: 'doughnut',
-      component: () => import('../views/thatscrazy.vue')
     }
     
     
