@@ -10,6 +10,7 @@
 import { ref, onMounted } from 'vue';
 import { Line } from 'vue-chartjs';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js';
+import { settings } from '@/stores/settings';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
@@ -46,16 +47,18 @@ async function getData () {
             month = "0" + month;
         }
 
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < settings.history.value + 1; i++) {
             let year = date.getFullYear() - i;
 
             const correctChoiceData = await fetch(`https://api.fxratesapi.com/historical?api_key=fxr_demo_asdiksd21&date=${year}-${month}-${day}&currencies=${props.CorrectChoice.code}`);
             const data = await correctChoiceData.json();
 
-            console.log(data, Object.entries(data.rates));
+            // console.log(Object.entries(data.rates));
 
-            historicalDates.push(year);
-            historicalRates.push(Object.entries(data.rates)[0][1]);
+            if (Object.entries(data.rates).length != 0) {
+                historicalDates.push(year);
+                historicalRates.push(Object.entries(data.rates)[0][1]);
+            }
         }
 
         // console.log(historicalDates, historicalRates)
@@ -98,7 +101,7 @@ const chartOptions = {
             display: true,
             title: {
                 display: true,
-                text: "6 Year History",
+                text: "Year-by-year change",
                 color: "#ffffff"
             },
             ticks: {
