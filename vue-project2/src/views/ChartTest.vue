@@ -257,11 +257,16 @@ async function getData () {
     // console.log(allCurrencies)
     // console.log(allAvailableCurrencies)
     const pickedCurrencies = [];
+    let rollNumber = settings.choices.value;
 
-    for (let i = 0; i < settings.choices.value; i++) {
+    for (let i = 0; i < rollNumber; i++) {
         let randomNumber = getRandomIntInclusive(0, allAvailableCurrencies.length - 1);
         const currencyName = allAvailableCurrencies[randomNumber][0];
         // console.log(allCurrencies.find((currencyArr) => currencyArr[0] == currencyName))
+        if (pickedCurrencies.includes(allCurrencies.find((currencyArr) => currencyArr[0] == currencyName)[1])) {
+          rollNumber++;
+          return;
+        }
         pickedCurrencies.push(allCurrencies.find((currencyArr) => currencyArr[0] == currencyName)[1]);
     }
 
