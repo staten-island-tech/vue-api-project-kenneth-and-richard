@@ -42,26 +42,48 @@ async function getData () {
     }
 
     chartData.value.labels = [];
-    chartData.value.datasets = {
+    chartData.value.datasets = [{
         backgroundColor: [],
         data: []
-    };
+    }];
 
     for (let currency of props.Choices) {
         chartData.value.labels.push(currency.code);
-        chartData.value.datasets.data.push(Object.entries(data.rates)[0][1]);
+        chartData.value.datasets[0].data.push(Object.entries(data.rates).find((arr) => arr[0] == currency.code)[1]);
         if (currency.code == props.CorrectChoice.code) {
-            chartData.value.datasets.backgroundColor.push(backgroundColors[1]);
+            chartData.value.datasets[0].backgroundColor.push(backgroundColors[1]);
         } else {
-            chartData.value.datasets.backgroundColor.push(backgroundColors[0]);
+            chartData.value.datasets[0].backgroundColor.push(backgroundColors[0]);
         }
     }
+    console.log(chartData.value)
 
+    loaded.value = true;
 }
+
+/*const chartData = {
+    labels: ["a", "b", "c", "D"],
+    datasets: [
+        {
+        backgroundColor: ['#90ff54', '#ffffff'],
+        data: [5, 10, 20, 30]
+        }   
+    ]
+
+}*/
 
 const chartOptions = {
     responsive: true,
     maintainAspectRatio: true,
+    animation: true,
+    plugins: {
+        legend: {
+            display: false
+        },
+        tooltip: {
+            enabled: true
+        }
+    },
 }
 
 </script>
@@ -69,7 +91,8 @@ const chartOptions = {
 <style scoped>
 
 #chart {
-    width: 50em;
+    width: 10em;
+    height: 10em;
 }
 
 </style>
