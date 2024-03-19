@@ -4,7 +4,7 @@ import { ref } from "vue";
 const settings = {
     choices: ref(4),
     minChoices: 2,
-    maxChoices: 8,
+    maxChoices: 100,
     history: ref(10),
     minHistory: 3,
     maxHistory: 15,

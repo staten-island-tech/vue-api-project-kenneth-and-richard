@@ -37,8 +37,6 @@ async function getData () {
     const historicalDates = [];
 
     try {
-        console.log(props.Choices)
-        console.log(props.CorrectChoice)
 
         const date = new Date();
         let day = date.getDate();

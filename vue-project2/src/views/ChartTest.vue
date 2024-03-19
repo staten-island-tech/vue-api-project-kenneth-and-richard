@@ -3,7 +3,8 @@
       <div class="howToPlayBackground" v-if="transitionActive">
         <div class="howToPlayMenu">
             <h1>How to play:</h1>
-            <p class="description">You will be given a line chart of a currency's historical exchange rate from USD, and a pie chart of a currency's value compared to the other options.</p>
+            <p class="description">The line chart displays the correct currency's historical exchange rate with USD.</p>
+            <p class="description">The pie chart represents the correct currency's value compared to the other options. <span style="color: var(--gold)">The other options will be rounded up or down if they are 10x less or 10x more than the correct currency</span>, respectively.</p>
             <div class="howToPlayDescription">
               <div class="summary">
                 <img src="/redUp.svg" class="howToPlayImg">
@@ -14,7 +15,6 @@
                 <img src="/greenDown.svg" class="howToPlayImg">
               </div>
             </div>
-            <h3 class="description" style="color: var(--gold);">Identify the correct currency to move on!</h3>
             <button @click="transitionActive = false" id="tutorialButton">
               <p id="tutorialButtonText">Continue</p>
               <img src="/play2.svg" id="tutorialButtonImg">
@@ -94,33 +94,63 @@
       <div class="howToPlayBackground" v-if="error">
         <div class="howToPlayMenu">
           <h1>Sorry, there was an error!</h1>
-          <button @click="errorNext" class="nextButton">Next</button>
+          <h3>Your progress will be saved</h3>
+          <button @click="errorNext" class="nextButton">Try again</button>
         </div>
       </div>
     </Transition>
 
+    <Transition name="howToPlay">
+      <div class="howToPlayBackground" v-if="leave">
+        <div class="howToPlayMenu">
+          <h1>Return to main menu?</h1>
+          <h3>Your progress will save!</h3>
+          <div class="leaveButtonArray">
+            <RouterLink to="/" class="nextButton" style="background-color: var(--deepGreen);">Return</RouterLink>
+            <button @click="leave = false" class="nextButton" style="background-color: #ff5050;">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </Transition>
+
+    <div class="scoreTotal">
+      <p>Current score: {{ scoreCounter.currentScore.value }}</p>
+      <p v-if="scoreCounter.currentScore.value != 0 || scoreCounter.highScore.value != 1">High score: {{ scoreCounter.highScore.value }}</p>
+    </div>
+    <div id="progressBar" style="margin-bottom: 3em">
+      <div class="fillerBar"
+      :style="{ width: (Math.min(1, Math.max(0, (scoreCounter.currentScore.value / scoreCounter.highScore.value))) * 100) + '%' }"
+      :class="{ full: (Math.min(1, Math.max(0, (scoreCounter.currentScore.value / scoreCounter.highScore.value)))) == 1 }"></div>
+    </div>
+
     <div class="charts">
-        <LineChart :Choices="choices"
-        :CorrectChoice="correctChoice"
-        v-if="loaded"
-        @response="error = true"/>
-        <DonutChart :Choices="choices"
-        :CorrectChoice="correctChoice"
-        v-if="loaded"/>
+      <LineChart :Choices="choices"
+      :CorrectChoice="correctChoice"
+      v-if="loaded"
+      @response="error = true"/>
+
+      <DonutChart :Choices="choices"
+      :CorrectChoice="correctChoice"
+      v-if="loaded"
+      @response="error = true"/>
     </div>
 
     <div class="buttonArray" v-if="loaded">
-        <button v-for="choice in choices"
-        @click="answer(choice)"
-        :class="{ active: answerChoice == choice }"
-        class="choiceButton">
-          <h3>{{ choice.code }}</h3>
-          <p>{{ choice.name }}</p>
-        </button>
+      <button v-for="choice in choices"
+      @click="answer(choice)"
+      :class="{ active: answerChoice == choice }"
+      class="choiceButton">
+        <h3>{{ choice.code }}</h3>
+        <p>{{ choice.name }}</p>
+      </button>
     </div>
 
     <div class="submitButtonArray">
-      <button @click="transitionActive = true" class="question">
+      <button @click="leave = true" class="question">
+        <img src="/leftArrow.svg" alt="Click for help">
+      </button>
+
+      <button @click="transitionActive = true" class="question" style="background-color: #FFEA50;">
         <img src="/questionMark.svg" alt="Click for help">
       </button>
 
@@ -149,6 +179,7 @@ const transitionActive = ref(false);
 const answerChoice = ref(null);
 const outcomeCorrect = ref(false);
 const outcomeWrong = ref(false);
+const leave = ref(false);
 
 function wrong () {
   outcomeWrong.value = false;
@@ -237,6 +268,13 @@ function getRandomIntInclusive(min, max) {
 }
 
 async function getData () {
+
+    setTimeout(() => {
+      if (loaded.value != true) {
+        error.value = true;
+      }
+    }, 5000);
+
     let data;
     let historicalData;
     const date = new Date();
@@ -246,6 +284,7 @@ async function getData () {
         month = "0" + month;
     }
     let year = date.getFullYear();
+    
     try {
         const response = await fetch(`https://api.fxratesapi.com/currencies`);
         const history = await fetch(`https://api.fxratesapi.com/historical?api_key=fxr_demo_asdiksd21&date=${year - 15}-${month}-${day}`);
@@ -261,16 +300,22 @@ async function getData () {
     // console.log(allCurrencies)
     // console.log(allAvailableCurrencies)
     const pickedCurrencies = [];
+    let rollNumber = 0;
 
-    for (let i = 0; i < settings.choices.value; i++) {
+    while (rollNumber < settings.choices.value) {
         let randomNumber = getRandomIntInclusive(0, allAvailableCurrencies.length - 1);
         const currencyName = allAvailableCurrencies[randomNumber][0];
         // console.log(allCurrencies.find((currencyArr) => currencyArr[0] == currencyName))
-        pickedCurrencies.push(allCurrencies.find((currencyArr) => currencyArr[0] == currencyName)[1]);
+        if (!pickedCurrencies.includes(allCurrencies.find((currencyArr) => currencyArr[0] == currencyName)[1])) {
+          rollNumber++;
+          pickedCurrencies.push(allCurrencies.find((currencyArr) => currencyArr[0] == currencyName)[1]);
+        }
     }
 
     choices.value = pickedCurrencies;
     correctChoice.value = pickedCurrencies[getRandomIntInclusive(0, pickedCurrencies.length - 1)];
+    console.clear();
+    console.info("Reveal answer", [correctChoice.value]);
 
     loaded.value = true;
 }
@@ -278,6 +323,19 @@ async function getData () {
 </script>
 
 <style scoped>
+
+.leaveButtonArray {
+  display: flex;
+  gap: 10em;
+}
+
+.charts {
+  height: 25em;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 90%;
+}
 
 .answerReveal {
   display: flex;
@@ -294,8 +352,8 @@ async function getData () {
 }
 
 .nextButton {
-  margin-top: auto;
-  margin-bottom: 3vh;
+  margin-top: 1em;
+  margin-bottom: 1em;
   font-size: var(--h2);
   padding-left: 1em;
   padding-right: 1em;
@@ -399,7 +457,7 @@ async function getData () {
 }
 
 .choiceButton {
-  width: 15em;
+  width: 15.5em;
   background-color: var(--invisible);
   border: 0;
   color: white;
@@ -409,6 +467,7 @@ async function getData () {
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 8.65em;
 }
 .choiceButton h3 {
   background: linear-gradient(to right, #ff0000, #ffbb00, #bbff00, #00ff4c, #00ffff, #00c3ff, #ff00ff);
@@ -421,6 +480,7 @@ async function getData () {
 .choiceButton p {
   margin-top: 0;
   margin-bottom: 2em;
+  max-width: 70%;
 }
 .choiceButton:hover {
   border-radius: 1.5em;
@@ -444,8 +504,8 @@ async function getData () {
 }
 
 #tutorialButton {
-  margin-top: auto;
-  margin-bottom: 3vh;
+  margin-top: 1em;
+  margin-bottom: 1em;
   height: 2em;
   width: 2em;
   font-size: var(--h2);
@@ -514,7 +574,7 @@ async function getData () {
   border-radius: 3vh;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   max-height: 80%;
-  min-height: 80%;
+  min-height: 30%;
   overflow: auto;
   display: flex;
   flex-direction: column;
