@@ -104,6 +104,9 @@
         :CorrectChoice="correctChoice"
         v-if="loaded"
         @response="error = true"/>
+        <DonutChart :Choices="choices"
+        :CorrectChoice="correctChoice"
+        v-if="loaded"/>
     </div>
 
     <div class="buttonArray" v-if="loaded">
@@ -133,6 +136,7 @@
 <script setup>
 
 import LineChart from '@/components/LineChart.vue';
+import DonutChart from '@/components/DonutChart.vue';
 import { ref, onMounted } from 'vue';
 import { settings } from '@/stores/settings';
 import { scoreCounter } from '@/stores/scores';

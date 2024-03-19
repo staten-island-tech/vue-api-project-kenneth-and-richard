@@ -11,7 +11,10 @@ const router = createRouter({
       path: '/play',
       name: 'play',
       component: () => import('../views/ChartTest.vue')
-    } /*,
+    }
+    
+    
+    /*,
     {
       path: '/about',
       name: 'about',
@@ -20,7 +23,7 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue')
     }*/
-  ]
-})
+    ]
+  });
 
-export default router
+  export default router
