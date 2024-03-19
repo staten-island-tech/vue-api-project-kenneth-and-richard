@@ -151,12 +151,16 @@ async function getData () {
     // console.log(allCurrencies)
     // console.log(allAvailableCurrencies)
     const pickedCurrencies = [];
+    let rollNumber = 0;
 
-    for (let i = 0; i < settings.choices.value; i++) {
+    while (rollNumber < settings.choices.value) {
         let randomNumber = getRandomIntInclusive(0, allCurrencies.length - 1);
         const currencyName = allCurrencies[randomNumber][0];
         // console.log(allCurrencies.find((currencyArr) => currencyArr[0] == currencyName))
-        pickedCurrencies.push(allCurrencies.find((currencyArr) => currencyArr[0] == currencyName)[1]);
+        if (!pickedCurrencies.includes(allCurrencies.find((currencyArr) => currencyArr[0] == currencyName)[1])) {
+          rollNumber++;
+          pickedCurrencies.push(allCurrencies.find((currencyArr) => currencyArr[0] == currencyName)[1]);
+        }
     }
 
     choices.value = pickedCurrencies;
@@ -239,6 +243,7 @@ function increment (type) {
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 8.65em;
 }
 .choiceButton h3 {
   background: linear-gradient(to right, #ff0000, #ffbb00, #bbff00, #00ff4c, #00ffff, #00c3ff, #ff00ff);
@@ -251,6 +256,7 @@ function increment (type) {
 .choiceButton p {
   margin-top: 0;
   margin-bottom: 2em;
+  max-width: 70%;
 }
 .choiceButton:hover {
   border-radius: 1.5em;

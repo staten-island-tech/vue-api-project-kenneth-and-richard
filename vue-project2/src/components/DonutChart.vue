@@ -15,7 +15,8 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const loaded = ref(false);
 const chartData = ref({});
-const backgroundColors = ["#3d4b61", "#90ff54"]
+const backgroundColors = ["#3d4b61", "#90ff54"];
+const emit = defineEmits(["response"]);
 
 const props = defineProps({
     Choices: Array,
@@ -31,34 +32,81 @@ onMounted(() => {
     }
 });
 
+function getRandomIntInclusive(min, max) {
+  const minCeiled = Math.ceil(min);
+  const maxFloored = Math.floor(max);
+  return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
+}
+
 async function getData () {
     let data;
-    let index = 1;
     try {
         const response = await fetch(`https://api.fxratesapi.com/latest?api_key=fxr_demo_asdiksd21&base=USD`);
         data = await response.json();
-        console.log(data)
     } catch (error) {
         console.warn(error);
+        emit("response", "error");
     }
 
     chartData.value.labels = [];
     chartData.value.datasets = [{
         backgroundColor: [],
-        data: []
+        data: [],
+        borderColor: "#000000"
     }];
 
     for (let currency of props.Choices) {
-        chartData.value.labels.push("Currency " + index);
-        index++;
-        chartData.value.datasets[0].data.push(Object.entries(data.rates).find((arr) => arr[0] == currency.code)[1]);
+
+        if (Object.entries(data.rates).find((arr) => arr[0] == currency.code)[1] <= 1.5 || currency.code == props.CorrectChoice.code) {
+            chartData.value.datasets[0].data.push(Object.entries(data.rates).find((arr) => arr[0] == currency.code)[1]);
+        } else {
+            chartData.value.datasets[0].data.push(Math.round(Object.entries(data.rates).find((arr) => arr[0] == currency.code)[1]));
+        }
+        
         if (currency.code == props.CorrectChoice.code) {
             chartData.value.datasets[0].backgroundColor.push(backgroundColors[1]);
+            chartData.value.labels.push("Currency W");
         } else {
             chartData.value.datasets[0].backgroundColor.push(backgroundColors[0]);
+            chartData.value.labels.push("Currency X");
         }
     }
-    console.log(chartData.value)
+
+   
+    for (let rate in chartData.value.datasets[0].data) {
+        
+        if (chartData.value.datasets[0].data[rate] >= 5 * Object.entries(data.rates).find((arr) => arr[0] == props.CorrectChoice.code)[1]) {
+            chartData.value.datasets[0].data[rate] = Math.floor(5 * Object.entries(data.rates).find((arr) => arr[0] == props.CorrectChoice.code)[1]);
+            chartData.value.labels[rate] += " (rounded down)";
+
+        } else if (chartData.value.datasets[0].data[rate] <= Object.entries(data.rates).find((arr) => arr[0] == props.CorrectChoice.code)[1] / 5) {
+            chartData.value.datasets[0].data[rate] = Math.ceil(Object.entries(data.rates).find((arr) => arr[0] == props.CorrectChoice.code)[1] / 5);
+            chartData.value.labels[rate] += " (rounded up)";
+        }
+    }
+
+    // shuffle the shit
+    const shuffleIndex = [];
+    const shuffleLabels = [];
+    const shuffleColors = [];
+    const shuffleData = [];
+    let increment = 0;
+    while (increment <= chartData.value.labels.length - 1) {
+        let index = getRandomIntInclusive(0, chartData.value.labels.length - 1);
+        if (!shuffleIndex.includes(index)) {
+            shuffleIndex.push(index);
+            increment++;
+        }
+    }
+    for (let i of shuffleIndex) {
+        shuffleLabels.push(chartData.value.labels[i]);
+        shuffleColors.push(chartData.value.datasets[0].backgroundColor[i]);
+        shuffleData.push(chartData.value.datasets[0].data[i]);
+    }
+
+    chartData.value.labels = shuffleLabels;
+    chartData.value.datasets[0].backgroundColor = shuffleColors;
+    chartData.value.datasets[0].data = shuffleData;
 
     loaded.value = true;
 }
