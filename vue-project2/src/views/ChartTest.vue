@@ -99,6 +99,19 @@
       </div>
     </Transition>
 
+    <Transition name="howToPlay">
+      <div class="howToPlayBackground" v-if="leave">
+        <div class="howToPlayMenu" style="height: ;">
+          <h1>Return to main menu?</h1>
+          <h3>Your progress will save!</h3>
+          <div class="leaveButtonArray">
+            <RouterLink to="/" class="nextButton" style="background-color: var(--deepGreen);">Return</RouterLink>
+            <button @click="leave = false" class="nextButton" style="background-color: #ff5050;">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </Transition>
+
     <div class="charts">
         <LineChart :Choices="choices"
         :CorrectChoice="correctChoice"
@@ -120,7 +133,11 @@
     </div>
 
     <div class="submitButtonArray">
-      <button @click="transitionActive = true" class="question">
+      <button @click="leave = true" class="question">
+        <img src="/leftArrow.svg" alt="Click for help">
+      </button>
+
+      <button @click="transitionActive = true" class="question" style="background-color: #FFEA50;">
         <img src="/questionMark.svg" alt="Click for help">
       </button>
 
@@ -149,6 +166,7 @@ const transitionActive = ref(false);
 const answerChoice = ref(null);
 const outcomeCorrect = ref(false);
 const outcomeWrong = ref(false);
+const leave = ref(false);
 
 function wrong () {
   outcomeWrong.value = false;
@@ -284,6 +302,19 @@ async function getData () {
 
 <style scoped>
 
+.leaveButtonArray {
+  display: flex;
+  gap: 10em;
+}
+
+.charts {
+  height: 25em;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 90%;
+}
+
 .answerReveal {
   display: flex;
   width: 90%;
@@ -299,8 +330,8 @@ async function getData () {
 }
 
 .nextButton {
-  margin-top: auto;
-  margin-bottom: 3vh;
+  margin-top: 1em;
+  margin-bottom: 1em;
   font-size: var(--h2);
   padding-left: 1em;
   padding-right: 1em;
@@ -449,8 +480,8 @@ async function getData () {
 }
 
 #tutorialButton {
-  margin-top: auto;
-  margin-bottom: 3vh;
+  margin-top: 1em;
+  margin-bottom: 1em;
   height: 2em;
   width: 2em;
   font-size: var(--h2);
@@ -519,7 +550,7 @@ async function getData () {
   border-radius: 3vh;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   max-height: 80%;
-  min-height: 80%;
+  min-height: 30%;
   overflow: auto;
   display: flex;
   flex-direction: column;

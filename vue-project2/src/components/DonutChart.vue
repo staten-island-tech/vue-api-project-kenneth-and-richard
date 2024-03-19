@@ -33,6 +33,7 @@ onMounted(() => {
 
 async function getData () {
     let data;
+    let index = 1;
     try {
         const response = await fetch(`https://api.fxratesapi.com/latest?api_key=fxr_demo_asdiksd21&base=USD`);
         data = await response.json();
@@ -48,7 +49,8 @@ async function getData () {
     }];
 
     for (let currency of props.Choices) {
-        chartData.value.labels.push(currency.code);
+        chartData.value.labels.push("Currency " + index);
+        index++;
         chartData.value.datasets[0].data.push(Object.entries(data.rates).find((arr) => arr[0] == currency.code)[1]);
         if (currency.code == props.CorrectChoice.code) {
             chartData.value.datasets[0].backgroundColor.push(backgroundColors[1]);
@@ -74,7 +76,7 @@ async function getData () {
 
 const chartOptions = {
     responsive: true,
-    maintainAspectRatio: true,
+    aspectRatio: 1,
     animation: true,
     plugins: {
         legend: {
