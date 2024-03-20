@@ -21,7 +21,7 @@ const emit = defineEmits(["response"]);
 const props = defineProps({
     Choices: Array,
     CorrectChoice: Object,
-})
+});
 
 onMounted(() => {
     loaded.value = false;
@@ -80,7 +80,7 @@ async function getData () {
 }
 
 const chartOptions = {
-    responsive: false,
+    responsive: true,
     animation: true,
     plugins: {
         legend: {
@@ -110,7 +110,7 @@ const chartOptions = {
             display: true,
             title: {
                 display: true,
-                text: "Exchange Rate (USD -> Currency)",
+                text: "USD -> Currency",
                 color: "#ffffff"
             },
             ticks: {
@@ -118,7 +118,7 @@ const chartOptions = {
             }
         }
     }
-}
+};
 
 </script>
 

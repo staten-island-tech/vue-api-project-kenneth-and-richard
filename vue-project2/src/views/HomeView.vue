@@ -431,16 +431,18 @@ function increment (type) {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .howToPlayMenu {
-  width: 80em;
+  min-width: 75em;
+  max-width: 125em;
   background-color: rgb(0, 0, 0);
   padding: 20px;
   border-radius: 3vh;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   max-height: 80%;
-  min-height: 80%;
+  min-height: 30%;
   overflow: auto;
   display: flex;
   flex-direction: column;

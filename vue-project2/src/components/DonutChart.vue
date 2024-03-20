@@ -16,6 +16,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const loaded = ref(false);
 const chartData = ref({});
 const backgroundColors = ["#3d4b61", "#90ff54"];
+const characters = ["​̵̺̩́̐̍͊͘̚", "​̵̖̣̯̺͉̩̼͌̽", "​̸̠̹̝̈́̂̐́̃͂̾", "​̶̮̱̬͆̓́ͅ", "​̸̬̠͔͉̳̺̊̐͒͂̀"]
 const emit = defineEmits(["response"]);
 
 const props = defineProps({
@@ -57,7 +58,7 @@ async function getData () {
 
     for (let currency of props.Choices) {
 
-        if (Object.entries(data.rates).find((arr) => arr[0] == currency.code)[1] <= 1.5 || currency.code == props.CorrectChoice.code) {
+        if (Object.entries(data.rates).find((arr) => arr[0] == currency.code)[1] <= 1.5 || (currency.code == props.CorrectChoice.code && currency.code <= 1000)) {
             chartData.value.datasets[0].data.push(Object.entries(data.rates).find((arr) => arr[0] == currency.code)[1]);
         } else {
             chartData.value.datasets[0].data.push(Math.round(Object.entries(data.rates).find((arr) => arr[0] == currency.code)[1]));
@@ -68,15 +69,15 @@ async function getData () {
             chartData.value.labels.push("Currency W");
         } else {
             chartData.value.datasets[0].backgroundColor.push(backgroundColors[0]);
-            chartData.value.labels.push("Currency X");
+            chartData.value.labels.push("Currency " + characters[getRandomIntInclusive(0, characters.length - 1)]);
         }
     }
 
    
     for (let rate in chartData.value.datasets[0].data) {
         
-        if (chartData.value.datasets[0].data[rate] >= 5 * Object.entries(data.rates).find((arr) => arr[0] == props.CorrectChoice.code)[1]) {
-            chartData.value.datasets[0].data[rate] = Math.floor(5 * Object.entries(data.rates).find((arr) => arr[0] == props.CorrectChoice.code)[1]);
+        if (chartData.value.datasets[0].data[rate] >= 10 * Object.entries(data.rates).find((arr) => arr[0] == props.CorrectChoice.code)[1]) {
+            chartData.value.datasets[0].data[rate] = Math.floor(10 * Object.entries(data.rates).find((arr) => arr[0] == props.CorrectChoice.code)[1]);
             chartData.value.labels[rate] += " (rounded down)";
 
         } else if (chartData.value.datasets[0].data[rate] <= Object.entries(data.rates).find((arr) => arr[0] == props.CorrectChoice.code)[1] / 5) {
@@ -132,9 +133,14 @@ const chartOptions = {
         },
         tooltip: {
             enabled: true
+        },
+        title: {
+            display: true,
+            text: "Currency Exchange Rates, " + new Date().getFullYear(),
+            color: "#ffffff"
         }
     },
-}
+};
 
 </script>
 
