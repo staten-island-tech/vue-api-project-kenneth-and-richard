@@ -372,6 +372,10 @@ async function getData () {
   background-color: var(--lightContent);
   border-radius: 3em;
   margin-top: 1em;
+  transition: all 0.5s;
+}
+#progressBar:hover {
+  transform: scaleX(1.05);
 }
 
 .fillerBar {
@@ -568,7 +572,8 @@ async function getData () {
 }
 
 .howToPlayMenu {
-  width: 70vw;
+  min-width: 75em;
+  max-width: 125em;
   background-color: rgb(0, 0, 0);
   padding: 20px;
   border-radius: 3vh;
