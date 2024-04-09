@@ -280,6 +280,9 @@ async function getData () {
     const date = new Date();
     let day = date.getDate();
     let month = date.getMonth() + 1;
+    if (String(day).length == 1) {
+        day = "0" + day;
+    }
     if (String(month).length == 1) {
         month = "0" + month;
     }
